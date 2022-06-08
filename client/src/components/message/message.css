@@ -1,0 +1,60 @@
+.messageContainer {
+    position: relative;
+    width: 100%;
+    word-wrap: break-word;
+    margin: 20px 0;
+    padding-left: 50px;
+}
+
+.userIcon {
+    position: absolute;
+    font-size: 2rem;
+    top: 0;
+    left: 0;
+}
+
+.messageUser {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.messageText {
+    font-size: 1.2rem;
+    margin: 5px 0;
+}
+
+.messageIconsContainer {
+    margin-top: 10px;
+    display: flex;
+}
+
+.messageContainer > * {
+    color: gray;
+}
+
+.messageIcon {
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.messageLikes {
+    font-size: .9rem;
+    color: #0a1843;
+    margin-right: 10px;
+}
+
+.arrowReplies {
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+}
+
+.arrowReplies > * {
+    color: #4f8ae2;
+}
+
+.arrowRepliesIcon {
+    margin-right: 10px;
+}
