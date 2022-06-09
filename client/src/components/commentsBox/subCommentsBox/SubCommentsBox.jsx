@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import "../commentsBox.css";
 import { useOpenReply } from '../../message/Message';
 
 const SubCommentsBox = (props) => {

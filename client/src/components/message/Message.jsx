@@ -2,6 +2,7 @@ import React, { useRef, useState, useContext } from "react";
 import "./message.css";
 import CommentsBox from "../commentsBox/CommentsBox";
 import SubMessage from "./subMessage/SubMessage";
+import { Icon } from '@iconify/react';
 
 //context
 const showReply = React.createContext();
@@ -24,16 +25,18 @@ const Message = (props) => {
   }
 
   //toggle arrow up and down
-  let arrow = <span className="iconify arrowIcon" data-icon="fluent:arrow-curve-down-right-20-regular"></span>
+  let arrow = <Icon className="arrowIcon" icon="akar-icons:arrow-down-thick" />
 
   const changeArrow = () => {
     setArrowUp(prevState => prevState = !prevState)
   }
 
   if(arrowUp) {
-    arrow = <span className="iconify arrowIcon" data-icon="fluent:arrow-curve-up-right-20-filled"></span>
+    // console.log('arrow up')
+    arrow = <Icon className="arrowIcon" icon="akar-icons:arrow-up-thick" />
   } else {
-    arrow = <span className="iconify arrowIcon" data-icon="fluent:arrow-curve-down-right-20-regular"></span>
+    // console.log('arrow down')
+    arrow = <Icon className="arrowIcon" icon="akar-icons:arrow-down-thick" />
   }
 
   //like message
@@ -89,9 +92,11 @@ const Message = (props) => {
         {/* {props.replies.length} */}
           <div>View 4 replies</div>
         </section>
-        <section className="subMessages">
-          <SubMessage user='dummy user reply' message='this is a dummy reply' likes={2} />
-        </section>
+        { arrowUp && (
+          <section className="subMessages">
+            <SubMessage user='dummy user reply' message='this is a dummy reply' likes={2} />
+          </section>
+        )}
       </section>
     </div>
   );

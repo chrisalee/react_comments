@@ -7,9 +7,9 @@ const MessageScroll = () => {
     <div className="">
       <Message user="initial dummy user" editable={false} message='Dummy message' likes={25} />
       <div className="bottomBar">
-        {/* <div className="loader"></div> */}
-        <Loader />
+        <div className="loader"></div>
       </div>
+        <Loader />
     </div>
   );
 };

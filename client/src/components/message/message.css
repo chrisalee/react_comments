@@ -38,23 +38,34 @@
     margin-right: 10px;
 }
 
+.messageUser {
+    color: #000000;
+}
+
 .messageLikes {
     font-size: .9rem;
-    color: #0a1843;
+    color: #aa4f00;
     margin-right: 10px;
 }
+
 
 .arrowReplies {
     margin-top: 10px;
     cursor: pointer;
     font-size: 0.9rem;
     display: flex;
+    align-items: center;
+}
+
+.arrowIcon {
+    font-size: 0.9rem;
+    margin-right: 10px;
 }
 
 .arrowReplies > * {
     color: #4f8ae2;
 }
 
-.arrowRepliesIcon {
+/* .arrowRepliesIcon {
     margin-right: 10px;
-}
+} */
