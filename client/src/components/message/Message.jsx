@@ -33,10 +33,10 @@ const Message = (props) => {
 
   if(arrowUp) {
     // console.log('arrow up')
-    arrow = <Icon className="arrowIcon" icon="akar-icons:arrow-up-thick" />
+    arrow = <Icon className="arrowIcon" icon="ph:arrow-elbow-left-up-bold" />
   } else {
     // console.log('arrow down')
-    arrow = <Icon className="arrowIcon" icon="akar-icons:arrow-down-thick" />
+    arrow = <Icon className="arrowIcon" icon="ph:arrow-elbow-left-down-bold" />
   }
 
   //like message
@@ -88,13 +88,26 @@ const Message = (props) => {
           {openReply && <CommentsBox autoFocus={true} />}
         </showReply.Provider>
         <section className="arrowReplies" onClick={changeArrow}>
-          {arrow}
-        {/* {props.replies.length} */}
-          <div>View 4 replies</div>
+          {props.replies.length > 0 ? (
+            <div>{arrow} View {props.replies.length} replies</div>
+          ) : (
+            null
+          )}
+        
         </section>
         { arrowUp && (
           <section className="subMessages">
-            <SubMessage user='dummy user reply' message='this is a dummy reply' likes={2} />
+            {
+              props.replies.map(reply => (
+                <SubMessage 
+                  key={Math.random()}
+                  parentKey={props.useKey}
+                  subId={reply._id}
+                  user={reply.user} 
+                  message={reply.message} 
+                  likes={reply.likes} />
+              ))
+            }
           </section>
         )}
       </section>

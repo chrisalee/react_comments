@@ -36,7 +36,11 @@ const TopCommentBox = (props) => {
   // send comment
   const sendComment = (event) => {
     event.preventDefault();
-    
+    fetch("/new-comment", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({messageData: message.current.value})
+    }).then(console.log('l'))
   }
 
   return (

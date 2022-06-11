@@ -1,0 +1,120 @@
+// /TEST DATA////////////////////////////////////////////////////////
+// const newComment = new CommentsModel({
+//     user: "Chris",
+//     message: "You da man!",
+//     likes: 222,
+//     editable: false,
+//     replies: [
+//         {
+//             user: "Sara Beth",
+//             message: "Yes you are",
+//             likes: 2
+//         },
+//         {
+//             user: "Lluvia",
+//             message: "Oooohhhhh yeah!!!!!!!!!!!",
+//             likes: 22
+//         },
+//     ]
+// }).save();
+
+
+
+const commentsTestData = [
+    {
+        user: "Cher",
+        message: "Do you believe in life after love",
+        likes: 2,
+        editable: false,
+        replies: [
+            {
+                user: "Sara",
+                message: "Yes",
+                likes: 0
+            },
+            {
+                user: "Beth",
+                message: "something in side my says, i really dont think your strong enough",
+                likes: 0
+            },
+            {
+                user: "Chris",
+                message: "* you're",
+                likes: 541
+            }
+        ]
+    },
+    {
+        user: "Jim",
+        message: "This is my message!",
+        likes: 0,
+        editable: false,
+        replies: []
+    },
+    {
+        user: "God",
+        message: "Be a good man",
+        likes: 2222,
+        editable: false,
+        replies: []
+    },
+    {
+        user: "Doc Sacus",
+        message: "smeo",
+        likes: 2222222,
+        editable: false,
+        replies: []
+    },
+    {
+        user: "Boss Hogg",
+        message: "you should get a tat of this on your forearm",
+        likes: 8221,
+        editable: false,
+        replies: []
+    },
+    {
+        user: "Gwen",
+        message: "i aint no hollaback gurl",
+        likes: 2,
+        editable: false,
+        replies: [
+            {
+                user: "Blink",
+                message: "This my shit",
+                likes: 10
+            },
+            {
+                user: "Manzana",
+                message: "B-A-N-A-N-A-S",
+                likes: 100
+            },
+            {
+                user: "Chris",
+                message: "play the thong song",
+                likes: 541
+            }
+        ]
+    },
+    {
+        user: "Sacus",
+        message: "smeo",
+        likes: 3,
+        editable: false,
+        replies: []
+    },
+    {
+        user: "Hogg",
+        message: "pen15",
+        likes: 82,
+        editable: false,
+        replies: []
+    }
+];
+
+CommentsModel.insertMany(commentsTestData, (error, data) => {
+    if(error) {
+        console.log(error)
+    } else {
+        console.log('successfuly inserted test data')
+    }
+})
