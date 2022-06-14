@@ -1,7 +1,11 @@
 import React, { useRef, useState } from "react";
 import "../commentsBox.css";
+//main context
+import { useMainContext } from '../../../context/Context'
 
 const TopCommentBox = (props) => {
+  const { setMessageReset, setCommentIncrement } = useMainContext()
+
   const message = useRef(null);
 
   // trigger underlined animation
@@ -22,7 +26,7 @@ const TopCommentBox = (props) => {
     setShowCommentLine(false);
   };
 
-  // if input value isnt empty enable the comment button
+  // if input value isnt empty ENABLE the comment button
   const commentStroke = (event) => {
     // event.preventDefault();
     let currentMessage = event.target.value;
@@ -40,7 +44,14 @@ const TopCommentBox = (props) => {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({messageData: message.current.value})
-    }).then(console.log('l'))
+    }).then(() => {
+      //reset entire comments and matching increment counter
+      setMessageReset(prevState => !prevState);
+      setCommentIncrement(10);
+      //delete text input, update comments and disable comment button
+      message.current.value = '';
+      setEnableButton(true);
+    })
   }
 
   return (

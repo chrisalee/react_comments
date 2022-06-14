@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import Loader from "./components/loader/MyLoader";
+import React, { useEffect, useRef, useState } from "react";
+// import Loader from "./components/loader/MyLoader";
 import Message from "./components/message/Message";
 // Main Context
 import { useMainContext } from './context/Context'
@@ -7,7 +7,10 @@ import { useMainContext } from './context/Context'
 const MessageScroll = (props) => {
 
   // when bool from main context changes. re-render message list
-  const { messageReset } = useMainContext();
+  const { messageReset, commentIncrement, setCommentIncrement } = useMainContext();
+
+  // make sure increment value in callback function for intersection observer is up to date.
+  const commentIncrementRef = useRef(commentIncrement)
 
   const [messages, setMessages] = useState([]);
   const [showBotomBar, setShowBottomBar] = useState(false);
@@ -21,10 +24,56 @@ const MessageScroll = (props) => {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({limitNum: 10})
     }).then(response => response.json()).then(comments => {
-      setMessages(comments);
+      setMessages(comments.reverse());
     })
 
-  }, [messageReset])
+  }, [messageReset]);
+
+  //intersection observer
+  const observer = React.useRef(new IntersectionObserver(entries => {
+    const first = entries[0];
+    if(first.isIntersecting) {
+      fetch("/get-more-data", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({commentIncrement: commentIncrementRef.current})
+      }).then(response => response.json()).then(comments => {
+        if(comments.length > 0) {
+          setTimeout(() => {
+            setMessages(prevState => [...prevState, ...comments])
+          }, 1000)
+        } else {
+          setTimeout(() => {
+            setShowBottomBar(false)
+          }, 1000)
+        }
+        //we use comments.length incase there are not 10 comments left
+        setCommentIncrement(prevState => prevState += comments.length)
+      })
+    }
+  }), {threshold: 1})
+
+  //ensure comment increment is up to date
+  useEffect(() => {
+    commentIncrementRef.current = commentIncrement;
+  }, [commentIncrement]);
+
+  //bottomBar will contain the bottomBar JSX element
+  const [bottomBar, setBottomBar] = useState(null);
+
+  useEffect(() => {
+    const currentBottomBar = bottomBar;
+    const currentObserver = observer.current;
+    if(currentBottomBar) {
+      currentObserver.observe(currentBottomBar);
+    }
+
+    return () => {
+      if(currentBottomBar) {
+        currentObserver.unobserve(currentBottomBar);
+      }
+    }
+  }, [bottomBar])
 
   return (
     <div className="">
@@ -40,9 +89,9 @@ const MessageScroll = (props) => {
         />
       ))}
       {messages.length > 9 && showBotomBar ? (
-        <div className="bottomBar">
-          {/* <div className="loader"></div> */}
-          <Loader />
+        <div className="bottomBar" ref={setBottomBar}>
+          <div className="loader" ></div>
+          {/* <Loader /> */}
         </div>
       ) : (
         null
