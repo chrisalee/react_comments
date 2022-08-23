@@ -3,6 +3,8 @@ import "./message.css";
 import CommentsBox from "../commentsBox/CommentsBox";
 import SubMessage from "./subMessage/SubMessage";
 import { Icon } from '@iconify/react';
+//main context
+import { useMainContext } from '../../context/Context'
 
 //context
 const showReply = React.createContext();
@@ -13,6 +15,9 @@ export const useOpenReply = () => {
 
 
 const Message = (props) => {
+
+  const { setMessageUpdate } = useMainContext();
+
   const likeIcon = useRef();
   const numLikes = useRef();
 
@@ -53,10 +58,22 @@ const Message = (props) => {
       likeIcon.current.style.color = '#7a7a7a';
     }
     numLikes.current.innerHTML = likes;
+    //store this new value in the database
+    fetch("/update-like", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({messageId: props.useKey, likes: likes})
+    })
   }
 
   const deleteMessage = () => {
-
+    fetch("/delete-comment", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({messageId: props.useKey})
+    }).then(() => {
+      setMessageUpdate([2, props.useKey])
+    })
   }
 
 
@@ -85,7 +102,7 @@ const Message = (props) => {
           }
         </section>
         <showReply.Provider value={changeOpenReply}>
-          {openReply && <CommentsBox autoFocus={true} />}
+          {openReply && <CommentsBox useKey={props.useKey} autoFocus={true} />}
         </showReply.Provider>
         <section className="arrowReplies" onClick={changeArrow}>
           {props.replies.length > 0 ? (

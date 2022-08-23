@@ -1,5 +1,7 @@
 import React, { useRef, useState, useContext } from "react";
 import SubCommentsBox from "../../commentsBox/subCommentsBox/SubCommentsBox";
+//main context
+import { useMainContext } from "../../../context/Context";
 
 //context
 const showReply = React.createContext();
@@ -10,6 +12,8 @@ export const useOpenReply = () => {
 
 
 const SubMessage = (props) => {
+  const {setMessageUpdate} = useMainContext();
+
   const likeIcon = useRef();
   const numLikes = useRef();
 
@@ -34,10 +38,22 @@ const SubMessage = (props) => {
       likeIcon.current.style.color = '#7a7a7a';
     }
     numLikes.current.innerHTML = likes;
+    //store this new value in the database
+    fetch("/update-sub-like", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({messageId: props.parentKey, subId: props.subId, likes: likes})
+    })
   }
 
   const deleteMessage = () => {
-
+    fetch("/delete-sub-comment", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({messageId: props.parentKey, subId: props.subId})
+    }).then(() => {
+      setMessageUpdate([1, props.parentKey]);
+    })
   }
 
 
@@ -57,7 +73,7 @@ const SubMessage = (props) => {
           <div className="messageLikes" ref={numLikes}>{props.likes}</div>
           <span className="iconify messageIcon" data-icon="zondicons:thumbs-down"></span>
           {
-            !props.editable ? (
+            props.user !== "Default User" ? (
               <div style={{cursor: "pointer"}} onClick={changeOpenReply}
               >REPLY</div>
             ) : (
@@ -66,7 +82,7 @@ const SubMessage = (props) => {
           }
         </section>
         <showReply.Provider value={changeOpenReply}>
-          {openReply && <SubCommentsBox autoFocus={true} />}
+          {openReply && <SubCommentsBox parentKey={props.parentKey} autoFocus={true} />}
         </showReply.Provider>
       </section>
     </div>

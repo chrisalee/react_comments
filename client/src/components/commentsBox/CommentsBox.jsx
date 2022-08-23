@@ -1,8 +1,12 @@
 import React, { useRef, useState } from "react";
 import "./commentsBox.css";
 import { useOpenReply } from '../message/Message';
+//main context
+import { useMainContext } from '../../context/Context';
 
 const CommentsBox = (props) => {
+
+  const { setMessageUpdate } = useMainContext();
 
   const changeOpenReply = useOpenReply();
 
@@ -40,6 +44,16 @@ const CommentsBox = (props) => {
   // send comment
   const sendComment = (event) => {
     event.preventDefault();
+    fetch("/new-sub-comment", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({messageId: props.useKey, messageData: message.current.value})
+    }).then(() => {
+      setMessageUpdate([1, props.useKey]);
+      //reset everything so it resets
+      message.current.value = '';
+      setEnableButton(false);
+    })
   };
 
   return (

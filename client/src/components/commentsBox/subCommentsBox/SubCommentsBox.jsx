@@ -1,7 +1,11 @@
 import React, { useRef, useState } from "react";
 import { useOpenReply } from '../../message/Message';
+//main context
+import { useMainContext } from '../../../context/Context'
 
 const SubCommentsBox = (props) => {
+
+  const { setMessageUpdate } = useMainContext();
 
   const changeOpenReply = useOpenReply();
 
@@ -39,6 +43,15 @@ const SubCommentsBox = (props) => {
   // send comment
   const sendComment = (event) => {
     event.preventDefault();
+
+    fetch("/new-sub-comment", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({messageId: props.parentKey, messageData: message.current.value})
+    }).then(() => {
+      setMessageUpdate([1, props.parentKey]);
+    })
+
   };
 
   return (

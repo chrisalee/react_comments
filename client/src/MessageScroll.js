@@ -7,7 +7,7 @@ import { useMainContext } from './context/Context'
 const MessageScroll = (props) => {
 
   // when bool from main context changes. re-render message list
-  const { messageReset, commentIncrement, setCommentIncrement } = useMainContext();
+  const { messageReset, commentIncrement, setCommentIncrement, messageUpdate } = useMainContext();
 
   // make sure increment value in callback function for intersection observer is up to date.
   const commentIncrementRef = useRef(commentIncrement)
@@ -16,7 +16,6 @@ const MessageScroll = (props) => {
   const [showBotomBar, setShowBottomBar] = useState(false);
   
   //load the test comments, do this either on application start or when a new comment is posted
-  
   useEffect(() => {
     setShowBottomBar(true);
     fetch("/get-data", {
@@ -24,10 +23,44 @@ const MessageScroll = (props) => {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({limitNum: 10})
     }).then(response => response.json()).then(comments => {
-      setMessages(comments.reverse());
+      setMessages(comments);
     })
 
   }, [messageReset]);
+
+  //either update or delete on individual comment
+  useEffect(() => {
+    if (messageUpdate) {
+      //if messageUpdate[0] is 1 then that means we update.  else we delete
+      if(messageUpdate[0] === 1) {
+        fetch("/update-comment", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({commentId: messageUpdate[1]})
+        }).then(res => res.json()).then(commentData => {
+          updateComment(commentData)
+        })
+      } else if(messageUpdate[0] === 2) {
+        deleteComment();
+      }
+    }
+  }, [messageUpdate])
+
+  const updateComment = (commentData) => {
+    let currentMessage = [...messages];
+    if(commentData) {
+      let currentMessageIndex = currentMessage.findIndex(message => message._id === commentData._id);
+      currentMessage.splice(currentMessageIndex, 1, commentData);
+      setMessages(currentMessage)
+    }
+  }
+
+  const deleteComment = () => {
+    let currentMessage = [...messages];
+    let currentMessageIndex = currentMessage.findIndex(message => message._id === messageUpdate[1]);
+    currentMessage.splice(currentMessageIndex, 1);
+    setMessages(currentMessage);
+  }
 
   //intersection observer
   const observer = React.useRef(new IntersectionObserver(entries => {
@@ -76,6 +109,7 @@ const MessageScroll = (props) => {
   }, [bottomBar])
 
   return (
+    // can add reverse() in the map here to have newest messages first
     <div className="">
       {messages.map(message => (
         <Message
